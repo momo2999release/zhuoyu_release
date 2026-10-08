@@ -268,6 +268,22 @@
             btn.classList.toggle('shifted');
         }
 
+        function closeSidebarOnMobile() {
+            const sidebar = document.getElementById('sidebar');
+            const btn = document.getElementById('toggle-sidebar');
+            // 移动端下点击链接后自动收起侧边栏
+            if (window.innerWidth <= 768) {
+                sidebar.classList.add('hidden');
+                btn.classList.remove('shifted');
+            }
+            // 延迟一点再滚动，确保 DOM 更新完成
+            setTimeout(() => {
+                const target = document.querySelector(location.hash);
+                if (target) {
+                    target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                }
+            }, 300);
+        }
         // 切换结局文本显示/隐藏
         function toggleText(btnElement) {
             const textDiv = btnElement.nextElementSibling;
@@ -322,6 +338,8 @@
                 let htmlContent = '';
                 let sidebarHtml = '';
 
+                
+
                 categories.forEach(category => {
                     // 侧边栏
                     sidebarHtml += `<span class="nav-category">${category}</span>`;
@@ -334,7 +352,7 @@
                         const safeId = 'end-' + ending.name.replace(/[^a-zA-Z0-9\u4e00-\u9fff]/g, '_');
 
                         // 侧边栏链接
-                        sidebarHtml += `<a href="#${safeId}" class="nav-item">${ending.name}</a>`;
+                        sidebarHtml += `<a href="#${safeId}" class="nav-item" onclick="closeSidebarOnMobile()">${ending.name}</a>`;
 
                         // 达成条件列表
                         const conditions = ending['达成条件'] || [];
