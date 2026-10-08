@@ -279,8 +279,16 @@
             // 延迟一点再滚动，确保 DOM 更新完成
             setTimeout(() => {
                 const target = document.querySelector(location.hash);
-                if (target) {
-                    target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                const scrollContainer = document.getElementById('main-content');
+                if (target && scrollContainer) {
+                    // 计算目标元素相对于滚动容器的偏移量
+                    const targetTop = target.getBoundingClientRect().top
+                                    - scrollContainer.getBoundingClientRect().top
+                                    + scrollContainer.scrollTop;
+                    scrollContainer.scrollTo({
+                        top: targetTop,
+                        behavior: 'smooth'
+                    });
                 }
             }, 300);
         }
