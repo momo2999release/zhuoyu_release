@@ -1,0 +1,380 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>结局图鉴</title>
+    <style>
+        :root {
+            --primary-color: #4a90e2;
+            --bg-color: #f4f4f9;
+            --sidebar-width: 260px;
+            --text-color: #333;
+            --border-color: #ddd;
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            display: flex;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        /* ===== 侧边栏 ===== */
+        #sidebar {
+            width: var(--sidebar-width);
+            background-color: #fff;
+            border-right: 1px solid var(--border-color);
+            overflow-y: auto;
+            padding: 20px;
+            box-shadow: 2px 0 5px rgba(0,0,0,0.05);
+            flex-shrink: 0;
+            transition: margin-left 0.3s ease;
+        }
+
+        #sidebar.hidden {
+            margin-left: calc(-1 * var(--sidebar-width));
+        }
+
+        #sidebar h2 {
+            font-size: 1.2rem;
+            margin-bottom: 15px;
+            color: var(--primary-color);
+            border-bottom: 2px solid var(--primary-color);
+            padding-bottom: 5px;
+        }
+
+        .nav-category {
+            font-weight: bold;
+            margin-top: 15px;
+            margin-bottom: 5px;
+            color: #555;
+            display: block;
+        }
+
+        .nav-item {
+            display: block;
+            padding: 5px 0 5px 15px;
+            text-decoration: none;
+            color: #666;
+            font-size: 0.9rem;
+            transition: color 0.2s;
+        }
+
+        .nav-item:hover {
+            color: var(--primary-color);
+            background-color: #f0f7ff;
+            border-radius: 4px;
+        }
+
+        /* ===== 折叠按钮 ===== */
+        #toggle-sidebar {
+            position: fixed;
+            top: 12px;
+            left: 12px;
+            z-index: 1000;
+            background-color: var(--primary-color);
+            color: #fff;
+            border: none;
+            border-radius: 6px;
+            padding: 8px 14px;
+            font-size: 1rem;
+            cursor: pointer;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.15);
+            transition: left 0.3s ease;
+        }
+
+        #toggle-sidebar.shifted {
+            left: calc(var(--sidebar-width) + 12px);
+        }
+
+        /* ===== 主内容区 ===== */
+        #main-content {
+            flex-grow: 1;
+            padding: 40px;
+            padding-top: 60px;
+            overflow-y: auto;
+            scroll-behavior: smooth;
+        }
+
+        .category-section {
+            margin-bottom: 40px;
+            background: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+        }
+
+        .category-title {
+            font-size: 1.8rem;
+            color: var(--primary-color);
+            margin-bottom: 20px;
+            border-left: 5px solid var(--primary-color);
+            padding-left: 15px;
+        }
+
+        .ending-card {
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            margin-bottom: 15px;
+            overflow: hidden;
+        }
+
+        .ending-header {
+            background-color: #fafafa;
+            padding: 15px;
+            font-weight: bold;
+            font-size: 1.1rem;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .ending-conditions {
+            padding: 12px 15px;
+            background-color: #eef6ff;
+        }
+
+        .ending-conditions h4 {
+            margin: 0 0 8px 0;
+            color: var(--primary-color);
+            font-size: 0.95rem;
+        }
+
+        .ending-conditions ul {
+            margin: 0;
+            padding-left: 20px;
+        }
+
+        .ending-conditions li {
+            margin-bottom: 4px;
+        }
+
+        /* 结局文本：默认隐藏 */
+        .ending-text-wrapper {
+            padding: 0 15px;
+        }
+
+        .ending-text-toggle {
+            display: inline-block;
+            margin: 10px 0;
+            padding: 6px 16px;
+            background-color: var(--primary-color);
+            color: #fff;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            transition: background-color 0.2s;
+        }
+
+        .ending-text-toggle:hover {
+            background-color: #357abd;
+        }
+
+        .ending-text {
+            display: none;
+            padding: 10px 0 15px 0;
+            line-height: 1.8;
+            color: #444;
+            border-top: 1px dashed var(--border-color);
+        }
+
+        .ending-text.active {
+            display: block;
+            animation: fadeIn 0.3s ease-in;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-5px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* 错误提示 */
+        #error-msg {
+            color: red;
+            font-weight: bold;
+            display: none;
+        }
+
+        /* ===== 移动端适配 ===== */
+        @media (max-width: 768px) {
+            #sidebar {
+                position: fixed;
+                top: 0;
+                left: 0;
+                height: 100vh;
+                z-index: 999;
+                box-shadow: 3px 0 10px rgba(0,0,0,0.2);
+            }
+
+            #sidebar.hidden {
+                margin-left: calc(-1 * var(--sidebar-width));
+            }
+
+            #toggle-sidebar.shifted {
+                left: 12px;
+            }
+
+            #main-content {
+                padding: 20px;
+                padding-top: 60px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- 折叠/展开侧边栏按钮 -->
+    <button id="toggle-sidebar" class="shifted" onclick="toggleSidebar()">☰</button>
+
+    <!-- 侧边栏 -->
+    <div id="sidebar">
+        <h2>结局目录</h2>
+        <div id="sidebar-content">加载中...</div>
+    </div>
+
+    <!-- 主内容区 -->
+    <div id="main-content">
+        <div id="error-msg"></div>
+        <div id="content-area"></div>
+    </div>
+
+    <script>
+        // 分类排序优先级
+        const CATEGORY_ORDER = ['通用', '苏丹主导', '摄政王主导', '均衡', '大敌'];
+
+        function sortCategories(categories) {
+            return categories.sort((a, b) => {
+                const indexA = CATEGORY_ORDER.indexOf(a);
+                const indexB = CATEGORY_ORDER.indexOf(b);
+                // 如果在优先级列表中，按列表顺序排；否则追加到末尾
+                const orderA = indexA === -1 ? 999 : indexA;
+                const orderB = indexB === -1 ? 999 : indexB;
+                return orderA - orderB;
+            });
+        }
+
+        // 侧边栏折叠/展开
+        function toggleSidebar() {
+            const sidebar = document.getElementById('sidebar');
+            const btn = document.getElementById('toggle-sidebar');
+            sidebar.classList.toggle('hidden');
+            btn.classList.toggle('shifted');
+        }
+
+        // 切换结局文本显示/隐藏
+        function toggleText(btnElement) {
+            const textDiv = btnElement.nextElementSibling;
+            if (textDiv.classList.contains('active')) {
+                textDiv.classList.remove('active');
+                btnElement.textContent = '查看剧透';
+            } else {
+                textDiv.classList.add('active');
+                btnElement.textContent = '折叠';
+            }
+        }
+
+        // 将文本中的 \n 转为 <br>，同时转义 HTML 防止注入
+        function formatText(text) {
+            // 先转义 HTML 特殊字符
+            const escaped = text
+                .replace(/&/g, '&amp;')
+                .replace(/</g, '&lt;')
+                .replace(/>/g, '&gt;');
+            // 再将 \n 替换为 <br>
+            return escaped.replace(/\n/g, '<br>');
+        }
+
+        // 加载并渲染
+        async function loadEndings() {
+            const contentArea = document.getElementById('content-area');
+            const sidebarContent = document.getElementById('sidebar-content');
+            const errorMsg = document.getElementById('error-msg');
+
+            try {
+                const response = await fetch('ending_text.json');
+                if (!response.ok) throw new Error('无法读取文件，请确保使用本地服务器运行。');
+                const data = await response.json();
+
+                // 按分类整理
+                const categorizedData = {};
+                const endingNames = Object.keys(data);
+
+                endingNames.forEach(name => {
+                    const ending = data[name];
+                    const category = ending['分类'] || '其他';
+                    if (!categorizedData[category]) {
+                        categorizedData[category] = [];
+                    }
+                    categorizedData[category].push({ name, ...ending });
+                });
+
+                // 排序分类
+                const categories = sortCategories(Object.keys(categorizedData));
+
+                sidebarContent.innerHTML = '';
+                let htmlContent = '';
+                let sidebarHtml = '';
+
+                categories.forEach(category => {
+                    // 侧边栏
+                    sidebarHtml += `<span class="nav-category">${category}</span>`;
+
+                    // 主内容
+                    htmlContent += `<div id="cat-${category}" class="category-section">`;
+                    htmlContent += `<h2 class="category-title">${category}</h2>`;
+
+                    categorizedData[category].forEach(ending => {
+                        const safeId = 'end-' + ending.name.replace(/[^a-zA-Z0-9\u4e00-\u9fff]/g, '_');
+
+                        // 侧边栏链接
+                        sidebarHtml += `<a href="#${safeId}" class="nav-item">${ending.name}</a>`;
+
+                        // 达成条件列表
+                        const conditions = ending['达成条件'] || [];
+                        const conditionsHtml = conditions.length > 0
+                            ? `<ul>${conditions.map(c => `<li>${c}</li>`).join('')}</ul>`
+                            : '<p>无</p>';
+
+                        // 结局文本
+                        const endingTextRaw = ending['结局文本'] || '（无文本）';
+
+                        htmlContent += `
+                            <div class="ending-card" id="${safeId}">
+                                <div class="ending-header">${ending.name}</div>
+                                <div class="ending-conditions">
+                                    <h4>达成条件：</h4>
+                                    ${conditionsHtml}
+                                </div>
+                                <div class="ending-text-wrapper">
+                                    <button class="ending-text-toggle" onclick="toggleText(this)">查看剧透</button>
+                                    <div class="ending-text">${formatText(endingTextRaw)}</div>
+                                </div>
+                            </div>
+                        `;
+                    });
+
+                    htmlContent += `</div>`;
+                });
+
+                sidebarContent.innerHTML = sidebarHtml;
+                contentArea.innerHTML = htmlContent;
+
+            } catch (error) {
+                console.error(error);
+                errorMsg.style.display = 'block';
+                errorMsg.innerText = `加载失败: ${error.message}。请检查文件名是否正确，或是否通过服务器运行。`;
+                sidebarContent.innerHTML = '加载失败';
+            }
+        }
+
+        window.onload = loadEndings;
+    </script>
+</body>
+</html>
