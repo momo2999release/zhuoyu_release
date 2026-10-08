@@ -11,6 +11,8 @@ MAC版本请点击：https://github.com/momo2999release/zhuoyu_release/releases/
 
 攻略在上方的文件列表里，请下载后使用
 
+结局剧透请查看：https://momo2999release.github.io/zhuoyu_release/
+
 【1.2版本更新】
 
 —新增结局回放
