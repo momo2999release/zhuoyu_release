@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>《琢玉》下载页</title>
+  <style>
+    body { font-family: sans-serif; max-width: 600px; margin: 50px auto; padding: 20px; }
+    #content { display: none; }
+    input { padding: 8px; margin: 10px 0; }
+    button { padding: 8px 16px; cursor: pointer; }
+    .error { color: red; display: none; }
+  </style>
+</head>
+<body>
+  <h1>欢迎来到《琢玉》发布页面</h1>
+  <p>请回答问题以解锁下载：</p>
+  <p><strong>奈费勒的初始反对是？</strong></p>
+  <input type="text" id="answer" placeholder="请输入答案">
+  <button onclick="check()">提交</button>
+  <p class="error" id="error">答案不对，再想想！</p>
+
+  <div id="content">
+    <hr>
+    <h2>下载</h2>
+    <ul>
+      <li><a href="https://github.com/momo2999release/zhuoyu_release/releases/download/1.2/WIN-zhuoyu-1.2.zip">WIN 版本</a></li>
+      <li><a href="https://github.com/momo2999release/zhuoyu_release/releases/download/1.2/MAC-zhuoyu-1.2.zip">MAC 版本</a></li>
+      <li><a href="https://github.com/momo2999release/zhuoyu_release/releases/download/1.2/android-zhuoyu-1.2.apk">Android 版本</a></li>
+        <li><a href="https://github.com/momo2999release/zhuoyu_release/releases/download/1.2/zhuoyu-1.2-guide.xlsx">游戏攻略</a></li>
+        <li><a href="https://momo2999release.github.io/zhuoyu_release/endings.html">结局剧透</a></li>
+    </ul>
+    <hr>
+    <h2>1.2 版本更新</h2>
+    <ul>
+      <li>新增结局回放</li>
+      <li>调整手机端【历史】显示</li>
+      <li>【待月圆】【月树下】回放彩蛋</li>
+    </ul>
+  </div>
+
+  <script>
+    function check() {
+      var ans = document.getElementById('answer').value.trim();
+      if (ans === '3') {
+        document.getElementById('content').style.display = 'block';
+        document.getElementById('error').style.display = 'none';
+      } else {
+        document.getElementById('error').style.display = 'block';
+        document.getElementById('content').style.display = 'none';
+      }
+    }
+  </script>
+</body>
+</html>
